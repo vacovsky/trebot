@@ -123,7 +123,7 @@ func deepCheckAnswer(providedAnswer, realAnswer string) bool {
 		byteAnswer = rex.ReplaceAll(byteAnswer, []byte(""))
 	}
 	lowerP, lowerR := strings.ToLower(providedAnswer), strings.ToLower(realAnswer)
-	fmt.Println(lowerP, ":", lowerR, ":", byteAnswer)
+	fmt.Println(lowerP, ":", lowerR, ":", string(byteAnswer))
 
 	if len([]byte(lowerP)) >= 5 && strings.Contains(lowerR, lowerP) {
 		return true
