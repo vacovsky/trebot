@@ -77,7 +77,8 @@ func getTriviaClue() (triviaModel, error) {
 }
 
 func checkAnswer(answer string) (string, error) {
-	if strings.ToLower(answer) == strings.ToLower(activeQuestion.Answer) {
+	oldAnswer := activeQuestion.Answer
+	if deepCheckAnswer(answer, activeQuestion.Answer) {
 		activeQuestion, _ = getTriviaClue()
 		activeQuestion.ExpiresAt = time.Now().Add(time.Minute * 5)
 		return fmt.Sprintf(`
@@ -88,7 +89,7 @@ func checkAnswer(answer string) (string, error) {
 +++++++++++++++++++++		
 New Question: %s
 +++++++++++++++++++++
-		`, answer, activeQuestion.Question), nil
+		`, oldAnswer, activeQuestion.Question), nil
 	}
 	return "Try again...", nil
 }
@@ -98,6 +99,37 @@ func init() {
 	bot.RegisterCommand(
 		"trivia",
 		"Displays a trivia question.",
-		"answer {your answer}",
+		`answer {your answer}
+		!trivia new`,
 		trivia)
+}
+
+func deepCheckAnswer(providedAnswer, realAnswer string) bool {
+	// cleanups := []string{
+	// 	`^(an )/g`,
+	// 	`^(the )/g`,
+	// 	`(<.>)|(<..>)/g`,
+	// 	`(.*)/g`,
+	// 	`^(a )/g`,
+	// 	`(<..>)/g`,
+	// 	`(")/g`,
+	// }
+	// byteAnswer := []byte(realAnswer)
+
+	// for _, c := range cleanups {
+	// 	fmt.Println()
+	// 	rex := regexp.MustCompile(c)
+	// 	byteAnswer = rex.ReplaceAll(byteAnswer, []byte(""))
+	// }
+	// prov, act := strings.ToLower(providedAnswer), strings.ToLower(string(byteAnswer))
+
+	lowerP, lowerR := strings.ToLower(providedAnswer), strings.ToLower(realAnswer)
+	// fmt.Println(prov, ":", act)
+
+	if len([]byte(lowerP)) >= 5 && strings.Contains(lowerR, lowerR) {
+		return true
+	} else if realAnswer == providedAnswer {
+		return true
+	}
+	return false
 }
