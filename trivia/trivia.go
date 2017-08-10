@@ -32,7 +32,6 @@ func trivia(command *bot.Cmd) (string, error) {
 		oldAnswer := activeQuestion.Answer
 		activeQuestion, err = getTriviaClue()
 		activeQuestion.ExpiresAt = time.Now().Add(time.Minute * 5)
-		fmt.Println(activeQuestion.Question, " |||| ", activeQuestion.Answer)
 		return fmt.Sprintf(`
 ---------------------
 Previous Answer: %s
@@ -73,6 +72,7 @@ func getTriviaClue() (triviaModel, error) {
 
 	q := []triviaModel{}
 	_ = json.Unmarshal(body, &q)
+	fmt.Println(q[0].Question, " |||| ", q[0].Answer)
 	return q[0], nil
 }
 
@@ -89,8 +89,6 @@ func checkAnswer(answer string) (string, error) {
 New Question: %s
 +++++++++++++++++++++
 		`, answer, activeQuestion.Question), nil
-		fmt.Println(activeQuestion.Question, " |||| ", activeQuestion.Answer)
-
 	}
 	return "Try again...", nil
 }
