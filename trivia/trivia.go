@@ -12,7 +12,8 @@ import (
 )
 
 var activeQuestion = triviaModel{
-	ID: 0,
+	ID:     0,
+	Answer: "nil",
 }
 
 func trivia(command *bot.Cmd) (string, error) {
@@ -28,10 +29,19 @@ func trivia(command *bot.Cmd) (string, error) {
 		s := strings.Join(command.Args[1:], " ")
 		str, err = checkAnswer(s)
 	case "new":
+		oldAnswer := activeQuestion.Answer
 		activeQuestion, err = getTriviaClue()
 		activeQuestion.ExpiresAt = time.Now().Add(time.Minute * 5)
 		fmt.Println(activeQuestion.Question, " |||| ", activeQuestion.Answer)
-		return activeQuestion.Question, err
+		return fmt.Sprintf(`
+---------------------
+Previous Answer: %s
+---------------------
+
++++++++++++++++++++++
+New Question: %s
++++++++++++++++++++++
+`, oldAnswer, activeQuestion.Question), err
 	default:
 		// if activeQuestion
 		if activeQuestion.ID == 0 || time.Now().Unix() > activeQuestion.ExpiresAt.Unix() {
@@ -68,7 +78,19 @@ func getTriviaClue() (triviaModel, error) {
 
 func checkAnswer(answer string) (string, error) {
 	if strings.ToLower(answer) == strings.ToLower(activeQuestion.Answer) {
-		return "Correct!", nil
+		activeQuestion, _ = getTriviaClue()
+		activeQuestion.ExpiresAt = time.Now().Add(time.Minute * 5)
+		return fmt.Sprintf(`
+---------------------
+%s is correct!
+---------------------
+
++++++++++++++++++++++		
+New Question: %s
++++++++++++++++++++++
+		`, answer, activeQuestion.Question), nil
+		fmt.Println(activeQuestion.Question, " |||| ", activeQuestion.Answer)
+
 	}
 	return "Try again...", nil
 }
