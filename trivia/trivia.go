@@ -12,6 +12,7 @@ import (
 	"github.com/go-chat-bot/bot"
 )
 
+var score = map[string]int{}
 var activeQuestion = triviaModel{
 	ID:     0,
 	Answer: "nil",
@@ -21,14 +22,17 @@ func trivia(command *bot.Cmd) (string, error) {
 	if len(command.Args) < 1 {
 		return "Not enough arguments!", nil
 	}
-
 	var str string
 	var err error
 
 	switch command.Args[0] {
+	case "score":
+		str, err = string(score[command.User.Nick]), nil
+		fmt.Println(score[command.User.Nick])
 	case "answer":
 		s := strings.Join(command.Args[1:], " ")
-		str, err = checkAnswer(s)
+		fmt.Println(command.User.Nick, ":", s)
+		str, err = checkAnswer(s, command.User.Nick)
 	case "new":
 		oldAnswer := activeQuestion.Answer
 		activeQuestion, err = getTriviaClue()
@@ -77,20 +81,22 @@ func getTriviaClue() (triviaModel, error) {
 	return q[0], nil
 }
 
-func checkAnswer(answer string) (string, error) {
+func checkAnswer(answer, user string) (string, error) {
 	oldAnswer := activeQuestion.Answer
 	if deepCheckAnswer(answer, activeQuestion.Answer) {
 		activeQuestion, _ = getTriviaClue()
 		activeQuestion.ExpiresAt = time.Now().Add(time.Minute * 5)
+		score[user]++
 		return fmt.Sprintf(`
 ---------------------
-%s is correct!
+%s is correct! ---  %s (%d)
 ---------------------
 
 +++++++++++++++++++++		
 New Question: %s
 +++++++++++++++++++++
-		`, oldAnswer, activeQuestion.Question), nil
+		`, oldAnswer, user, score[user], activeQuestion.Question), nil
+
 	}
 	return "Try again...", nil
 }
@@ -101,7 +107,9 @@ func init() {
 		"trivia",
 		"Displays a trivia question.",
 		`answer {your answer}
-		!trivia new`,
+		!trivia new
+		!trivia score
+		`,
 		trivia)
 }
 
