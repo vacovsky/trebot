@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
 
@@ -105,28 +106,26 @@ func init() {
 }
 
 func deepCheckAnswer(providedAnswer, realAnswer string) bool {
-	// cleanups := []string{
-	// 	`^(an )/g`,
-	// 	`^(the )/g`,
-	// 	`(<.>)|(<..>)/g`,
-	// 	`(.*)/g`,
-	// 	`^(a )/g`,
-	// 	`(<..>)/g`,
-	// 	`(")/g`,
-	// }
-	// byteAnswer := []byte(realAnswer)
+	cleanups := []string{
+		`^(an )/g`,
+		`^(the )/g`,
+		`(<.>)|(<..>)/g`,
+		`(.*)/g`,
+		`^(a )/g`,
+		`(<..>)/g`,
+		`(")/g`,
+	}
+	byteAnswer := []byte(realAnswer)
 
-	// for _, c := range cleanups {
-	// 	fmt.Println()
-	// 	rex := regexp.MustCompile(c)
-	// 	byteAnswer = rex.ReplaceAll(byteAnswer, []byte(""))
-	// }
-	// prov, act := strings.ToLower(providedAnswer), strings.ToLower(string(byteAnswer))
-
+	for _, c := range cleanups {
+		fmt.Println()
+		rex := regexp.MustCompile(c)
+		byteAnswer = rex.ReplaceAll(byteAnswer, []byte(""))
+	}
 	lowerP, lowerR := strings.ToLower(providedAnswer), strings.ToLower(realAnswer)
-	// fmt.Println(prov, ":", act)
+	fmt.Println(lowerP, ":", lowerR, ":", byteAnswer)
 
-	if len([]byte(lowerP)) >= 5 && strings.Contains(lowerR, lowerR) {
+	if len([]byte(lowerP)) >= 5 && strings.Contains(lowerR, lowerP) {
 		return true
 	} else if realAnswer == providedAnswer {
 		return true
