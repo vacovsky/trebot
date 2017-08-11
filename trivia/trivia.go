@@ -129,7 +129,7 @@ New Question (%d) (%s): %s
 			activeQuestion.Value,
 			activeQuestion.Category.Title,
 			activeQuestion.Question), nil
-
+		saveScores()
 	}
 	return "Try again...", nil
 }
