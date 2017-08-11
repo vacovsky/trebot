@@ -15,7 +15,7 @@ import (
 	"github.com/go-chat-bot/bot"
 )
 
-var scoresPath = "triviaScores.json"
+var scoresPath = "trivia/triviaScores.json"
 var scores = map[string]scoreModel{}
 var activeQuestion = triviaModel{
 	ID:     0,
@@ -116,7 +116,7 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 		tmp := scores[command.User.ID]
 		tmp.Score += old.Value
 		scores[command.User.ID] = tmp
-	return fmt.Sprintf(`
+		return fmt.Sprintf(`
 ---------------------
 %s is correct! ---  %s (%d)
 ---------------------
