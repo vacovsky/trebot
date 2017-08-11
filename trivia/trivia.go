@@ -72,6 +72,7 @@ func renderScores() (string, error) {
 	for _, v := range data {
 		table.Append(v)
 	}
+	table.SetAlignment(5)
 	table.Render()
 	return string(buf.Bytes()), nil
 }
@@ -96,13 +97,13 @@ func trivia(command *bot.Cmd) (string, error) {
 		activeQuestion, err = getTriviaClue()
 		activeQuestion.ExpiresAt = time.Now().Add(time.Minute * 5)
 		return fmt.Sprintf(`
----------------------
-Previous Answer: %s
----------------------
+---------------------------------------------------
+*Previous Answer:* %s
+---------------------------------------------------
 
-+++++++++++++++++++++
-New Question (%d) (%s): %s
-+++++++++++++++++++++
+===================================================
+*New Question (%d) (%s):* %s
+===================================================
 `, oldAnswer, activeQuestion.Value, activeQuestion.Category.Title, activeQuestion.Question), err
 	default:
 		// if activeQuestion
@@ -151,13 +152,13 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 		scores[command.User.ID] = tmp
 		saveScores()
 		return fmt.Sprintf(`
----------------------
-%s is correct! ---  %s (%d)
----------------------
+---------------------------------------------------
+%s *is correct!* ---  %s (%d)
+---------------------------------------------------
 
-+++++++++++++++++++++		
-New Question (%d) (%s): %s
-+++++++++++++++++++++
+===================================================
+*New Question:* %s
+===================================================
 		`, old.Answer, command.User.Nick,
 			scores[command.User.ID].Score,
 			activeQuestion.Value,
