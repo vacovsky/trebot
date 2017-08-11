@@ -44,7 +44,7 @@ Previous Answer: %s
 +++++++++++++++++++++
 New Question (%d) (%s): %s
 +++++++++++++++++++++
-`, oldAnswer, activeQuestion.Value, activeQuestion.Category, activeQuestion.Question), err
+`, oldAnswer, activeQuestion.Value, activeQuestion.Category.Title, activeQuestion.Question), err
 	default:
 		// if activeQuestion
 		if activeQuestion.ID == 0 || time.Now().Unix() > activeQuestion.ExpiresAt.Unix() {
@@ -94,7 +94,7 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 +++++++++++++++++++++		
 New Question (%d) (%s): %s
 +++++++++++++++++++++
-		`, old.Answer, command.User.Nick, score[command.User.ID], activeQuestion.Value, activeQuestion.Category, activeQuestion.Question), nil
+		`, old.Answer, command.User.Nick, score[command.User.ID], activeQuestion.Value, activeQuestion.Category.Title, activeQuestion.Question), nil
 
 	}
 	return "Try again...", nil
