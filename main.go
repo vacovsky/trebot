@@ -8,5 +8,5 @@ import (
 )
 
 func main() {
-	slack.Run(os.Getenv("kacibot"))
+	slack.Run(os.Getenv("trebot"))
 }
