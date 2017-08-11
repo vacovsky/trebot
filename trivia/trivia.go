@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -27,12 +28,10 @@ func trivia(command *bot.Cmd) (string, error) {
 
 	switch command.Args[0] {
 	case "score":
-		str, err = string(score[command.User.Nick]), nil
-		fmt.Println(score[command.User.Nick])
+		str, err = strconv.Itoa(score[command.User.ID]), nil
 	case "answer":
 		s := strings.Join(command.Args[1:], " ")
-		fmt.Println(command.User.Nick, ":", s)
-		str, err = checkAnswer(s, command.User.Nick)
+		str, err = checkAnswer(s, command.User.ID)
 	case "new":
 		oldAnswer := activeQuestion.Answer
 		activeQuestion, err = getTriviaClue()
