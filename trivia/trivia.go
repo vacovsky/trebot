@@ -126,6 +126,7 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 		tmp := scores[command.User.ID]
 		tmp.Score += old.Value
 		scores[command.User.ID] = tmp
+		saveScores()
 		return fmt.Sprintf(`
 ---------------------
 %s is correct! ---  %s (%d)
@@ -139,7 +140,7 @@ New Question (%d) (%s): %s
 			activeQuestion.Value,
 			activeQuestion.Category.Title,
 			activeQuestion.Question), nil
-		saveScores()
+
 	}
 	return "Try again...", nil
 }
