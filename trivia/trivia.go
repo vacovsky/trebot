@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,10 +15,36 @@ import (
 	"github.com/go-chat-bot/bot"
 )
 
-var score = map[string]int{}
+var scoresPath = "triviaScores.json"
+var scores = map[string]scoreModel{}
 var activeQuestion = triviaModel{
 	ID:     0,
 	Answer: "nil",
+}
+
+func loadScores() {
+	scoreLocal := []scoreModel{}
+	file, err := os.Open(scoresPath)
+	defer file.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	jsonParser := json.NewDecoder(file)
+	if err = jsonParser.Decode(&scoreLocal); err != nil {
+		fmt.Println(err)
+	}
+	for _, user := range scoreLocal {
+		fmt.Println(user.Name, user.ID, user.Score)
+	}
+}
+
+func saveScores() {
+	scoresJSON, _ := json.Marshal(scores)
+	err := ioutil.WriteFile(scoresPath, scoresJSON, 0644)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func trivia(command *bot.Cmd) (string, error) {
@@ -28,7 +56,7 @@ func trivia(command *bot.Cmd) (string, error) {
 
 	switch command.Args[0] {
 	case "score":
-		str, err = strconv.Itoa(score[command.User.ID]), nil
+		str, err = strconv.Itoa(scores[command.User.ID].Score), nil
 	case "answer":
 		s := strings.Join(command.Args[1:], " ")
 		str, err = checkAnswer(s, command)
@@ -85,8 +113,10 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 	if deepCheckAnswer(answer, activeQuestion.Answer) {
 		activeQuestion, _ = getTriviaClue()
 		activeQuestion.ExpiresAt = time.Now().Add(time.Minute * 5)
-		score[command.User.ID] += old.Value
-		return fmt.Sprintf(`
+		tmp := scores[command.User.ID]
+		tmp.Score += old.Value
+		scores[command.User.ID] = tmp
+	return fmt.Sprintf(`
 ---------------------
 %s is correct! ---  %s (%d)
 ---------------------
@@ -94,7 +124,11 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 +++++++++++++++++++++		
 New Question (%d) (%s): %s
 +++++++++++++++++++++
-		`, old.Answer, command.User.Nick, score[command.User.ID], activeQuestion.Value, activeQuestion.Category.Title, activeQuestion.Question), nil
+		`, old.Answer, command.User.Nick,
+			scores[command.User.ID].Name,
+			activeQuestion.Value,
+			activeQuestion.Category.Title,
+			activeQuestion.Question), nil
 
 	}
 	return "Try again...", nil

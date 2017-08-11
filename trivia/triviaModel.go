@@ -22,3 +22,9 @@ type triviaModel struct {
 		CluesCount int       `json:"clues_count"`
 	} `json:"category"`
 }
+
+type scoreModel struct {
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Score int    `json:"score"`
+}
