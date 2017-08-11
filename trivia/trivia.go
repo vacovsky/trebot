@@ -43,9 +43,9 @@ Previous Answer: %s
 ---------------------
 
 +++++++++++++++++++++
-New Question: %s
+New Question (%d): %s
 +++++++++++++++++++++
-`, oldAnswer, activeQuestion.Question), err
+`, oldAnswer, activeQuestion.Value, activeQuestion.Question), err
 	default:
 		// if activeQuestion
 		if activeQuestion.ID == 0 || time.Now().Unix() > activeQuestion.ExpiresAt.Unix() {
@@ -82,20 +82,20 @@ func getTriviaClue() (triviaModel, error) {
 }
 
 func checkAnswer(answer, user string) (string, error) {
-	oldAnswer := activeQuestion.Answer
+	old := activeQuestion
 	if deepCheckAnswer(answer, activeQuestion.Answer) {
 		activeQuestion, _ = getTriviaClue()
 		activeQuestion.ExpiresAt = time.Now().Add(time.Minute * 5)
-		score[user]++
+		score[user] += old.Value
 		return fmt.Sprintf(`
 ---------------------
 %s is correct! ---  %s (%d)
 ---------------------
 
 +++++++++++++++++++++		
-New Question: %s
+New Question (%d): %s
 +++++++++++++++++++++
-		`, oldAnswer, user, score[user], activeQuestion.Question), nil
+		`, old.Answer, user, score[user], activeQuestion.Value, activeQuestion.Question), nil
 
 	}
 	return "Try again...", nil
