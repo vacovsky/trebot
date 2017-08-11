@@ -85,7 +85,7 @@ func trivia(command *bot.Cmd) (string, error) {
 
 	switch command.Args[0] {
 	case "scoreboard":
-		str, err = strconv.Itoa(scores[command.User.ID].Score), nil
+		str, err = renderScores()
 	case "score":
 		str, err = strconv.Itoa(scores[command.User.ID].Score), nil
 	case "answer":
