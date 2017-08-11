@@ -148,6 +148,8 @@ New Question (%d) (%s): %s
 }
 
 func init() {
+	loadScores()
+
 	fmt.Println("Registering Trivia...")
 	bot.RegisterCommand(
 		"trivia",
