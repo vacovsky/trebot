@@ -31,7 +31,7 @@ func trivia(command *bot.Cmd) (string, error) {
 		str, err = strconv.Itoa(score[command.User.ID]), nil
 	case "answer":
 		s := strings.Join(command.Args[1:], " ")
-		str, err = checkAnswer(s, command.User.ID)
+		str, err = checkAnswer(s, command)
 	case "new":
 		oldAnswer := activeQuestion.Answer
 		activeQuestion, err = getTriviaClue()
@@ -42,9 +42,9 @@ Previous Answer: %s
 ---------------------
 
 +++++++++++++++++++++
-New Question (%d): %s
+New Question (%d) (%s): %s
 +++++++++++++++++++++
-`, oldAnswer, activeQuestion.Value, activeQuestion.Question), err
+`, oldAnswer, activeQuestion.Value, activeQuestion.Category, activeQuestion.Question), err
 	default:
 		// if activeQuestion
 		if activeQuestion.ID == 0 || time.Now().Unix() > activeQuestion.ExpiresAt.Unix() {
@@ -80,21 +80,21 @@ func getTriviaClue() (triviaModel, error) {
 	return q[0], nil
 }
 
-func checkAnswer(answer, user string) (string, error) {
+func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 	old := activeQuestion
 	if deepCheckAnswer(answer, activeQuestion.Answer) {
 		activeQuestion, _ = getTriviaClue()
 		activeQuestion.ExpiresAt = time.Now().Add(time.Minute * 5)
-		score[user] += old.Value
+		score[command.User.ID] += old.Value
 		return fmt.Sprintf(`
 ---------------------
 %s is correct! ---  %s (%d)
 ---------------------
 
 +++++++++++++++++++++		
-New Question (%d): %s
+New Question (%d) (%s): %s
 +++++++++++++++++++++
-		`, old.Answer, user, score[user], activeQuestion.Value, activeQuestion.Question), nil
+		`, old.Answer, command.User.Nick, score[command.User.ID], activeQuestion.Value, activeQuestion.Category, activeQuestion.Question), nil
 
 	}
 	return "Try again...", nil
