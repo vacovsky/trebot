@@ -35,7 +35,12 @@ func loadScores() {
 		fmt.Println(err)
 	}
 	for _, user := range scoreLocal {
-		fmt.Println(user.Name, user.ID, user.Score)
+		tmp := scoreModel{
+			Name:  user.Name,
+			ID:    user.ID,
+			Score: user.Score,
+		}
+		scores[user.ID] = tmp
 	}
 }
 
@@ -125,7 +130,7 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 New Question (%d) (%s): %s
 +++++++++++++++++++++
 		`, old.Answer, command.User.Nick,
-			scores[command.User.ID].Name,
+			scores[command.User.ID].Score,
 			activeQuestion.Value,
 			activeQuestion.Category.Title,
 			activeQuestion.Question), nil
