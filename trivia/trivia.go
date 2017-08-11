@@ -1,6 +1,7 @@
 package trivia
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -13,6 +14,7 @@ import (
 	"time"
 
 	"github.com/go-chat-bot/bot"
+	"github.com/olekukonko/tablewriter"
 )
 
 var scoresPath = "triviaScores.json"
@@ -57,6 +59,23 @@ func saveScores() {
 	}
 }
 
+func renderScores() (string, error) {
+	buf := &bytes.Buffer{}
+	data := [][]string{}
+	for _, u := range scores {
+		data = append(data, []string{u.Name, strconv.Itoa(u.Score)})
+	}
+
+	table := tablewriter.NewWriter(buf) //NewWriter(os.Stdout)
+	table.SetHeader([]string{"User", "Score"})
+
+	for _, v := range data {
+		table.Append(v)
+	}
+	table.Render()
+	return string(buf.Bytes()), nil
+}
+
 func trivia(command *bot.Cmd) (string, error) {
 	if len(command.Args) < 1 {
 		return "Not enough arguments!", nil
@@ -65,6 +84,8 @@ func trivia(command *bot.Cmd) (string, error) {
 	var err error
 
 	switch command.Args[0] {
+	case "scoreboard":
+		str, err = strconv.Itoa(scores[command.User.ID].Score), nil
 	case "score":
 		str, err = strconv.Itoa(scores[command.User.ID].Score), nil
 	case "answer":
@@ -157,6 +178,7 @@ func init() {
 		`answer {your answer}
 		!trivia new
 		!trivia score
+		!trivia scoreboard
 		`,
 		trivia)
 }

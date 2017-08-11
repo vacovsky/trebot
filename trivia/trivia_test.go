@@ -32,3 +32,27 @@ func Test_saveScores(t *testing.T) {
 		})
 	}
 }
+
+func Test_renderScores(t *testing.T) {
+	tests := []struct {
+		name    string
+		want    string
+		wantErr bool
+	}{
+		{
+			name: "nothing",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := renderScores()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("renderScores() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("renderScores() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
