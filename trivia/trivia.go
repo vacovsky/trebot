@@ -125,6 +125,8 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 		activeQuestion.ExpiresAt = time.Now().Add(time.Minute * 5)
 		tmp := scores[command.User.ID]
 		tmp.Score += old.Value
+		tmp.ID = command.User.ID
+		tmp.Name = command.User.Nick
 		scores[command.User.ID] = tmp
 		saveScores()
 		return fmt.Sprintf(`
