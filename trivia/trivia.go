@@ -45,7 +45,11 @@ func loadScores() {
 }
 
 func saveScores() {
-	scoresJSON, _ := json.Marshal(scores)
+	saveModel := []scoreModel{}
+	for _, u := range scores {
+		saveModel = append(saveModel, u)
+	}
+	scoresJSON, _ := json.Marshal(saveModel)
 	err := ioutil.WriteFile(scoresPath, scoresJSON, 0644)
 	if err != nil {
 		fmt.Println(err)
