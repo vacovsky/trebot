@@ -15,7 +15,7 @@ import (
 	"github.com/go-chat-bot/bot"
 )
 
-var scoresPath = "trivia/triviaScores.json"
+var scoresPath = "triviaScores.json"
 var scores = map[string]scoreModel{}
 var activeQuestion = triviaModel{
 	ID:     0,
@@ -50,6 +50,7 @@ func saveScores() {
 		saveModel = append(saveModel, u)
 	}
 	scoresJSON, _ := json.Marshal(saveModel)
+	fmt.Println(string(scoresJSON))
 	err := ioutil.WriteFile(scoresPath, scoresJSON, 0644)
 	if err != nil {
 		fmt.Println(err)
