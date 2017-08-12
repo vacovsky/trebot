@@ -114,7 +114,13 @@ func trivia(command *bot.Cmd) (string, error) {
 			activeQuestion[command.Channel].Value,
 			activeQuestion[command.Channel].Question), err
 	default:
-		return "Not enough arguments.", nil
+		return fmt.Sprintf(`
+:question:  *Current Question (%s for %d):* %s
+		`,
+			activeQuestion[command.Channel].Category,
+			activeQuestion[command.Channel].Value,
+			activeQuestion[command.Channel].Question), nil
+
 	}
 
 	if err != nil {
