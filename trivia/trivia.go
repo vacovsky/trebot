@@ -161,7 +161,7 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 ---------------------------------------------------
 
 ===================================================
-*New Question* (%d):* %s
+*New Question* (%d) (%s)*:* %s
 ===================================================
 		`, old.Answer, command.User.Nick,
 			scores[command.User.ID].Score,
