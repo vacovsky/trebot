@@ -105,9 +105,9 @@ func trivia(command *bot.Cmd) (string, error) {
 		q.ExpiresAt = time.Now().Add(time.Minute * 5)
 		activeQuestion[command.Channel] = q
 		return fmt.Sprintf(`
-*Previous Answer:* %s
+:unamused:  *Previous Answer:* %s
 
-:question:  *New Question (%s for %d):* %s  :question:
+:question:  *New Question (%s for %d):* %s
 `,
 			oldAnswer,
 			activeQuestion[command.Channel].Category.Title,
@@ -175,9 +175,9 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 		scores[command.User.ID] = tmp
 		saveScores()
 		return fmt.Sprintf(`
-:moneybag:  *%s* is correct! ---  %s (%d)  :moneybag:
+:moneybag:  *%s* is correct! ---  %s (%d)
 
-:question:  *New Question (%s for %d):* %s  :question:
+:question:  *New Question (%s for %d):* %s
 		`, old.Answer,
 			command.User.Nick,
 			scores[command.User.ID].Score,
