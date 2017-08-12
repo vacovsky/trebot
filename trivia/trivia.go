@@ -127,6 +127,28 @@ func trivia(command *bot.Cmd) (string, error) {
 	return str, nil
 }
 
+func scrubStrings(input string) string {
+	cleanups := []string{
+		`^(an )`,
+		`^(the )`,
+		`(<.>)`,
+		`^(a )`,
+		`(<..>)`,
+		`(\(|\))`,
+		`(\")`,
+		`(\\')`,
+	}
+	byteAnswer := []byte(input)
+
+	for _, c := range cleanups {
+		fmt.Println(string(byteAnswer))
+		rex := regexp.MustCompile(c)
+		byteAnswer = rex.ReplaceAll(byteAnswer, []byte(""))
+	}
+	fmt.Println(string(byteAnswer))
+
+	return strings.ToLower(string(byteAnswer))
+}
 func getTriviaClue() (triviaModel, error) {
 	jservice := "http://jservice.io/api/random"
 	client := &http.Client{}
@@ -138,7 +160,9 @@ func getTriviaClue() (triviaModel, error) {
 	if q[0].Value == 0 {
 		q[0].Value = 5000
 	}
-	fmt.Println(q[0].Question, " |||| ", q[0].Answer)
+	q[0].Answer = scrubStrings(q[0].Answer)
+
+	fmt.Println(q[0].Question, " ***** ", q[0].Answer)
 	return q[0], nil
 }
 
@@ -189,22 +213,6 @@ func init() {
 }
 
 func deepCheckAnswer(providedAnswer, realAnswer string) bool {
-	cleanups := []string{
-		`^(an )/g`,
-		`^(the )/g`,
-		`(<.>)|(<..>)/g`,
-		`(.*)/g`,
-		`^(a )/g`,
-		`(<..>)/g`,
-		`(")/g`,
-	}
-	byteAnswer := []byte(realAnswer)
-
-	for _, c := range cleanups {
-		fmt.Println()
-		rex := regexp.MustCompile(c)
-		byteAnswer = rex.ReplaceAll(byteAnswer, []byte(""))
-	}
 	lowerP, lowerR := strings.ToLower(providedAnswer), strings.ToLower(realAnswer)
 	// fmt.Print1ln(lowerP, ":", lowerR, ":", string(byteAnswer))
 

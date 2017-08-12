@@ -113,3 +113,29 @@ func Test_deepCheckAnswer(t *testing.T) {
 		})
 	}
 }
+
+func Test_scrubStrings(t *testing.T) {
+	type args struct {
+		input string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			args: args{
+				input: `the "<d>\'</d>the (ss) test`,
+			},
+			name: "scrub test",
+			want: "the ss test",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := scrubStrings(tt.args.input); got != tt.want {
+				t.Errorf("scrubStrings() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
