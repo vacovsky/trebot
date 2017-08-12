@@ -106,7 +106,7 @@ func trivia(command *bot.Cmd) (string, error) {
 ---------------------------------------------------
 
 ===================================================
-*New Question (%d) (%s):* %s
+*New Question* (%d) (%s)*:* %s
 ===================================================
 `, oldAnswer, activeQuestion.Value, activeQuestion.Category.Title, activeQuestion.Question), err
 	default:
@@ -161,7 +161,7 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 ---------------------------------------------------
 
 ===================================================
-*New Question:* %s
+*New Question* (%d):* %s
 ===================================================
 		`, old.Answer, command.User.Nick,
 			scores[command.User.ID].Score,
