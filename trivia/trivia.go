@@ -72,7 +72,7 @@ func renderScores() (string, error) {
 	for _, v := range data {
 		table.Append(v)
 	}
-	table.SetAlignment(5)
+	table.SetColWidth(25)
 	table.Render()
 	return string(buf.Bytes()), nil
 }
