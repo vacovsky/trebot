@@ -100,18 +100,14 @@ func trivia(command *bot.Cmd) (string, error) {
 		s := strings.Join(command.Args[1:], " ")
 		str, err = checkAnswer(s, command)
 	case "new":
-		oldAnswer := previousQuestion[command.Channel].Answer
+		oldAnswer := activeQuestion[command.Channel].Answer
 		q, err := getTriviaClue()
 		q.ExpiresAt = time.Now().Add(time.Minute * 5)
 		activeQuestion[command.Channel] = q
 		return fmt.Sprintf(`
----------------------------------------------------
 *Previous Answer:* %s
----------------------------------------------------
 
-===================================================
-*New Question (%s for %d):* %s
-===================================================
+:question:  *New Question (%s for %d):* %s  :question:
 `,
 			oldAnswer,
 			activeQuestion[command.Channel].Category.Title,
@@ -179,13 +175,9 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 		scores[command.User.ID] = tmp
 		saveScores()
 		return fmt.Sprintf(`
----------------------------------------------------
-*%s* is correct! ---  %s (%d)
----------------------------------------------------
+:moneybag:  *%s* is correct! ---  %s (%d)  :moneybag:
 
-===================================================
-*New Question (%s for %d):* %s
-===================================================
+:question:  *New Question (%s for %d):* %s  :question:
 		`, old.Answer,
 			command.User.Nick,
 			scores[command.User.ID].Score,
