@@ -76,7 +76,7 @@ func renderScores() (string, error) {
 
 	sort.Slice(data, func(i, j int) bool { return data[i][1] > data[j][1] })
 
-	table.SetAlignment(5)
+	table.SetColWidth(25)
 	table.Render()
 	return string(buf.Bytes()), nil
 }
@@ -106,12 +106,12 @@ func trivia(command *bot.Cmd) (string, error) {
 ---------------------------------------------------
 
 ===================================================
-*New Question* (%s for %d)*:* %s
+*New Question (%s for %d):* %s
 ===================================================
 `,
 			oldAnswer,
-			activeQuestion.Value,
 			activeQuestion.Category.Title,
+			activeQuestion.Value,
 			activeQuestion.Question), err
 	default:
 		// if activeQuestion
