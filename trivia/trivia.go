@@ -81,7 +81,7 @@ func renderScores() (string, error) {
 	}
 	table.Render()
 	fmt.Println(string(buf.Bytes()))
-	return string(buf.Bytes()), nil
+	return "```" + string(buf.Bytes()) + "```", nil
 }
 
 func trivia(command *bot.Cmd) (string, error) {
