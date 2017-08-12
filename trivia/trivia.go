@@ -141,11 +141,11 @@ func scrubStrings(input string) string {
 	byteAnswer := []byte(input)
 
 	for _, c := range cleanups {
-		fmt.Println(string(byteAnswer))
+		// fmt.Println(string(byteAnswer))
 		rex := regexp.MustCompile(c)
 		byteAnswer = rex.ReplaceAll(byteAnswer, []byte(""))
 	}
-	fmt.Println(string(byteAnswer))
+	// fmt.Println(string(byteAnswer))
 
 	return strings.ToLower(string(byteAnswer))
 }
