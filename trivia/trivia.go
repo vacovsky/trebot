@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"regexp"
@@ -27,8 +26,11 @@ func loadScores() {
 	scoreLocal := []scoreModel{}
 	file, err := os.Open(scoresPath)
 	defer file.Close()
-	if err != nil {
-		log.Fatal(err)
+	tried := false
+	if err != nil && !tried {
+		tried = true
+		saveScores()
+		loadScores()
 	}
 
 	jsonParser := json.NewDecoder(file)
@@ -66,15 +68,17 @@ func renderScores() (string, error) {
 	}
 
 	table := tablewriter.NewWriter(buf) //NewWriter(os.Stdout)
-	table.SetHeader([]string{"User", "Score"})
+	table.SetHeader([]string{"Rank", "User", "Score"})
+	sort.Slice(data, func(i, j int) bool {
+		d1, _ := strconv.Atoi(data[i][1])
+		d2, _ := strconv.Atoi(data[j][1])
+		return d1 > d2
+	})
 
-	for _, v := range data {
+	for i, v := range data {
+		v = append([]string{strconv.Itoa(i + 1)}, v...)
 		table.Append(v)
 	}
-
-	sort.Slice(data, func(i, j int) bool { return data[i][1] > data[j][1] })
-
-	table.SetColWidth(25)
 	table.Render()
 	fmt.Println(string(buf.Bytes()))
 	return string(buf.Bytes()), nil
@@ -202,7 +206,7 @@ func deepCheckAnswer(providedAnswer, realAnswer string) bool {
 		byteAnswer = rex.ReplaceAll(byteAnswer, []byte(""))
 	}
 	lowerP, lowerR := strings.ToLower(providedAnswer), strings.ToLower(realAnswer)
-	fmt.Println(lowerP, ":", lowerR, ":", string(byteAnswer))
+	// fmt.Print1ln(lowerP, ":", lowerR, ":", string(byteAnswer))
 
 	if len([]byte(lowerP)) >= 5 && strings.Contains(lowerR, lowerP) {
 		return true
