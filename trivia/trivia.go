@@ -167,7 +167,7 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 ---------------------------------------------------
 
 ===================================================
-*New Question* (%s for %d)*:* %s
+*New Question (%s for %d):* %s
 ===================================================
 		`, old.Answer,
 			command.User.Nick,
