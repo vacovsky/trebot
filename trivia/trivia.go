@@ -106,9 +106,13 @@ func trivia(command *bot.Cmd) (string, error) {
 ---------------------------------------------------
 
 ===================================================
-*New Question* (%d) (%s)*:* %s
+*New Question* (%s for %d)*:* %s
 ===================================================
-`, oldAnswer, activeQuestion.Value, activeQuestion.Category.Title, activeQuestion.Question), err
+`,
+			oldAnswer,
+			activeQuestion.Value,
+			activeQuestion.Category.Title,
+			activeQuestion.Question), err
 	default:
 		// if activeQuestion
 		if activeQuestion.ID == 0 || time.Now().Unix() > activeQuestion.ExpiresAt.Unix() {
@@ -137,9 +141,11 @@ func getTriviaClue() (triviaModel, error) {
 	req, _ := http.NewRequest("GET", jservice, nil)
 	r, _ := client.Do(req)
 	body, _ := ioutil.ReadAll(r.Body)
-
 	q := []triviaModel{}
 	_ = json.Unmarshal(body, &q)
+	if q[0].Value == 0 {
+		q[0].Value = 5000
+	}
 	fmt.Println(q[0].Question, " |||| ", q[0].Answer)
 	return q[0], nil
 }
@@ -157,16 +163,17 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 		saveScores()
 		return fmt.Sprintf(`
 ---------------------------------------------------
-%s *is correct!* ---  %s (%d)
+*%s* is correct! ---  %s (%d)
 ---------------------------------------------------
 
 ===================================================
-*New Question* (%d) (%s)*:* %s
+*New Question* (%s for %d)*:* %s
 ===================================================
-		`, old.Answer, command.User.Nick,
+		`, old.Answer,
+			command.User.Nick,
 			scores[command.User.ID].Score,
-			activeQuestion.Value,
 			activeQuestion.Category.Title,
+			activeQuestion.Value,
 			activeQuestion.Question), nil
 
 	}
