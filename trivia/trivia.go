@@ -20,10 +20,8 @@ import (
 
 var scoresPath = "triviaScores.json"
 var scores = map[string]scoreModel{}
-var activeQuestion = triviaModel{
-	ID:     0,
-	Answer: "nil",
-}
+var activeQuestion = map[string]triviaModel{}
+var previousQuestion = map[string]triviaModel{}
 
 func loadScores() {
 	scoreLocal := []scoreModel{}
@@ -78,6 +76,7 @@ func renderScores() (string, error) {
 
 	table.SetColWidth(25)
 	table.Render()
+	fmt.Println(string(buf.Bytes()))
 	return string(buf.Bytes()), nil
 }
 
@@ -97,9 +96,10 @@ func trivia(command *bot.Cmd) (string, error) {
 		s := strings.Join(command.Args[1:], " ")
 		str, err = checkAnswer(s, command)
 	case "new":
-		oldAnswer := activeQuestion.Answer
-		activeQuestion, err = getTriviaClue()
-		activeQuestion.ExpiresAt = time.Now().Add(time.Minute * 5)
+		oldAnswer := previousQuestion[command.Channel].Answer
+		q, err := getTriviaClue()
+		q.ExpiresAt = time.Now().Add(time.Minute * 5)
+		activeQuestion[command.Channel] = q
 		return fmt.Sprintf(`
 ---------------------------------------------------
 *Previous Answer:* %s
@@ -110,25 +110,13 @@ func trivia(command *bot.Cmd) (string, error) {
 ===================================================
 `,
 			oldAnswer,
-			activeQuestion.Category.Title,
-			activeQuestion.Value,
-			activeQuestion.Question), err
+			activeQuestion[command.Channel].Category.Title,
+			activeQuestion[command.Channel].Value,
+			activeQuestion[command.Channel].Question), err
 	default:
-		// if activeQuestion
-		if activeQuestion.ID == 0 || time.Now().Unix() > activeQuestion.ExpiresAt.Unix() {
-			activeQuestion, err = getTriviaClue()
-			activeQuestion.ExpiresAt = time.Now().Add(time.Minute * 5)
-			return activeQuestion.Question, err
-		} else {
-			return fmt.Sprintf(`
-Current active question is: 
-- %s
-
-- Expires at: %s
-`, activeQuestion.Question, activeQuestion.ExpiresAt), nil
-
-		}
+		return "Not enough arguments.", nil
 	}
+
 	if err != nil {
 		return fmt.Sprintf("Error: %s", err), nil
 	}
@@ -151,10 +139,11 @@ func getTriviaClue() (triviaModel, error) {
 }
 
 func checkAnswer(answer string, command *bot.Cmd) (string, error) {
-	old := activeQuestion
-	if deepCheckAnswer(answer, activeQuestion.Answer) {
-		activeQuestion, _ = getTriviaClue()
-		activeQuestion.ExpiresAt = time.Now().Add(time.Minute * 5)
+	old := activeQuestion[command.Channel]
+	if deepCheckAnswer(answer, activeQuestion[command.Channel].Answer) {
+		q, _ := getTriviaClue()
+		q.ExpiresAt = time.Now().Add(time.Minute * 5)
+		activeQuestion[command.Channel] = q
 		tmp := scores[command.User.ID]
 		tmp.Score += old.Value
 		tmp.ID = command.User.ID
@@ -172,9 +161,9 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 		`, old.Answer,
 			command.User.Nick,
 			scores[command.User.ID].Score,
-			activeQuestion.Category.Title,
-			activeQuestion.Value,
-			activeQuestion.Question), nil
+			activeQuestion[command.Channel].Category.Title,
+			activeQuestion[command.Channel].Value,
+			activeQuestion[command.Channel].Question), nil
 
 	}
 	return "Try again...", nil
