@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -72,7 +73,10 @@ func renderScores() (string, error) {
 	for _, v := range data {
 		table.Append(v)
 	}
-	table.SetColWidth(25)
+
+	sort.Slice(data, func(i, j int) bool { return data[i][1] > data[j][1] })
+
+	table.SetAlignment(5)
 	table.Render()
 	return string(buf.Bytes()), nil
 }
