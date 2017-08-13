@@ -53,7 +53,7 @@ func saveScores() {
 		saveModel = append(saveModel, u)
 	}
 	scoresJSON, _ := json.Marshal(saveModel)
-	fmt.Println(string(scoresJSON))
+	// fmt.Println(string(scoresJSON))
 	err := ioutil.WriteFile(scoresPath, scoresJSON, 0644)
 	if err != nil {
 		fmt.Println(err)
@@ -80,7 +80,7 @@ func renderScores() (string, error) {
 		table.Append(v)
 	}
 	table.Render()
-	fmt.Println(string(buf.Bytes()))
+	// fmt.Println(string(buf.Bytes()))
 	return "```" + string(buf.Bytes()) + "```", nil
 }
 
@@ -166,7 +166,7 @@ func getTriviaClue() (triviaModel, error) {
 	}
 	q[0].Answer = scrubStrings(q[0].Answer)
 
-	fmt.Println(q[0].Question, " ***** ", q[0].Answer)
+	// fmt.Println(q[0].Question, " ***** ", q[0].Answer)
 	return q[0], nil
 }
 
