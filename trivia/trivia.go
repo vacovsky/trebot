@@ -105,9 +105,11 @@ func trivia(command *bot.Cmd) (string, error) {
 		q.ExpiresAt = time.Now().Add(time.Minute * 5)
 		activeQuestion[command.Channel] = q
 		return fmt.Sprintf(`
-:unamused:  *Previous Answer:* %s
+:unamused:  *Previous Answer:* 
+> %s
 
-:question:  *New Question (%s for %d):* %s
+:question:  *New Question (%s for %d):* 
+> %s
 `,
 			oldAnswer,
 			activeQuestion[command.Channel].Category.Title,
@@ -115,12 +117,12 @@ func trivia(command *bot.Cmd) (string, error) {
 			activeQuestion[command.Channel].Question), err
 	default:
 		return fmt.Sprintf(`
-:question:  *Current Question (%s for %d):* %s
+:question:  *Current Question (%s for %d):* 
+> %s
 		`,
 			activeQuestion[command.Channel].Category,
 			activeQuestion[command.Channel].Value,
 			activeQuestion[command.Channel].Question), nil
-
 	}
 
 	if err != nil {
@@ -183,7 +185,8 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 		return fmt.Sprintf(`
 :moneybag:  *%s* is correct! ---  %s (%d)
 
-:question:  *New Question (%s for %d):* %s
+:question:  *New Question (%s for %d):* 
+> %s
 		`, old.Answer,
 			command.User.Nick,
 			scores[command.User.ID].Score,
