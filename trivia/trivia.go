@@ -39,9 +39,12 @@ func loadScores() {
 	}
 	for _, user := range scoreLocal {
 		tmp := scoreModel{
-			Name:  user.Name,
-			ID:    user.ID,
-			Score: user.Score,
+			Name:                user.Name,
+			ID:                  user.ID,
+			Score:               user.Score,
+			CorrectAnswers:      user.CorrectAnswers,
+			NewQuestionRequests: user.NewQuestionRequests,
+			WrongAnswers:        user.WrongAnswers,
 		}
 		scores[user.ID] = tmp
 	}
@@ -87,7 +90,7 @@ func renderScores() (string, error) {
 		table.Append(v)
 	}
 	table.Render()
-	// fmt.Println(string(buf.Bytes()))
+	fmt.Println(string(buf.Bytes()))
 	return "```" + string(buf.Bytes()) + "```", nil
 }
 

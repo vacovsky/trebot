@@ -1,1 +1,58 @@
-[{"id":"U2XQ08BD4","name":"joey","score":7600},{"id":"U2SNENQ2G","name":"k-weaver","score":1000},{"id":"U2Y3B4DB9","name":"vacoj","score":11500},{"id":"U3M5G5D33","name":"kremdelakrem","score":200},{"id":"U5ZPH08E5","name":"bolognatownmafia","score":18600},{"id":"U3Z36D21F","name":"josh-m","score":17300},{"id":"U2SJTAKV3","name":"casey","score":115000}]
+[
+    {
+        "id": "U2XQ08BD4",
+        "name": "joey",
+        "score": 17400,
+        "correct_answers": 0,
+        "wrong_answers": 0,
+        "new_question_requests": 0
+    },
+    {
+        "id": "U2SNENQ2G",
+        "name": "k-weaver",
+        "score": 1000,
+        "correct_answers": 0,
+        "wrong_answers": 0,
+        "new_question_requests": 0
+    },
+    {
+        "id": "U2Y3B4DB9",
+        "name": "vacoj",
+        "score": 31600,
+        "correct_answers": 1,
+        "wrong_answers": 2,
+        "new_question_requests": 1
+    },
+    {
+        "id": "U3M5G5D33",
+        "name": "kremdelakrem",
+        "score": 700,
+        "correct_answers": 1,
+        "wrong_answers": 3,
+        "new_question_requests": 0
+    },
+    {
+        "id": "U5ZPH08E5",
+        "name": "bolognatownmafia",
+        "score": 18600,
+        "correct_answers": 0,
+        "wrong_answers": 4,
+        "new_question_requests": 1
+    },
+    {
+        "id": "U3Z36D21F",
+        "name": "josh-m",
+        "score": 21500,
+        "correct_answers": 1,
+        "wrong_answers": 5,
+        "new_question_requests": 1
+    },
+    {
+        "id": "U2SJTAKV3",
+        "name": "casey",
+        "score": 116500,
+        "correct_answers": 0,
+        "wrong_answers": 0,
+        "new_question_requests": 0
+    }
+]
