@@ -162,14 +162,7 @@ func trivia(command *bot.Cmd) (string, error) {
 			activeQuestion[command.Channel].Value,
 			activeQuestion[command.Channel].Question), err
 	default:
-		return fmt.Sprintf(`
-:question:  Current Question (*[%d] %s for %d*): 
-> *%s*
-		`,
-			activeQuestion[command.Channel].Airdate.Year(),
-			activeQuestion[command.Channel].Category.Title,
-			activeQuestion[command.Channel].Value,
-			activeQuestion[command.Channel].Question), nil
+		return showAbout()
 	}
 
 	if err != nil {
