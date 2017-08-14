@@ -64,11 +64,18 @@ func renderScores() (string, error) {
 	buf := &bytes.Buffer{}
 	data := [][]string{}
 	for _, u := range scores {
-		data = append(data, []string{u.Name, strconv.Itoa(u.Score)})
+		thisUser := []string{
+			u.Name,
+			strconv.Itoa(u.Score),
+			strconv.Itoa(u.CorrectAnswers),
+			strconv.Itoa(u.WrongAnswers),
+			strconv.Itoa(u.NewQuestionRequests),
+		}
+		data = append(data, thisUser)
 	}
 
 	table := tablewriter.NewWriter(buf) //NewWriter(os.Stdout)
-	table.SetHeader([]string{"Rank", "User", "Score"})
+	table.SetHeader([]string{"Rank", "User", "Score", "Correct", "Wrong", "New"})
 	sort.Slice(data, func(i, j int) bool {
 		d1, _ := strconv.Atoi(data[i][1])
 		d2, _ := strconv.Atoi(data[j][1])
@@ -83,6 +90,7 @@ func renderScores() (string, error) {
 	// fmt.Println(string(buf.Bytes()))
 	return "```" + string(buf.Bytes()) + "```", nil
 }
+
 func showAbout() (string, error) {
 	return `
 	> This plugin for go-chat-bot (https://github.com/go-chat-bot/bot) leverages jService to provide every Jeopardy question ever.  Thanks to the person who made that! 
@@ -91,6 +99,7 @@ func showAbout() (string, error) {
 	> Submit bugs/issues at https://github.com/vacoj/trebot/issues
 	`, nil
 }
+
 func trivia(command *bot.Cmd) (string, error) {
 	if len(command.Args) < 1 {
 		return "Not enough arguments!", nil
