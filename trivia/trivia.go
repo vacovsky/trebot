@@ -134,13 +134,14 @@ func trivia(command *bot.Cmd) (string, error) {
 		scores[command.User.ID] = tmp
 		saveScores()
 		return fmt.Sprintf(`
-:unamused:  *Previous Answer:* 
-> %s
+:unamused:  Previous Answer: 
+> *%s*
 
-:question:  *New Question (%s for %d):* 
-> %s
+:question:  New Question ([%d] *%s* for *%d*): 
+> *%s*
 `,
 			oldAnswer,
+			activeQuestion[command.Channel].Airdate.Year,
 			activeQuestion[command.Channel].Category.Title,
 			activeQuestion[command.Channel].Value,
 			activeQuestion[command.Channel].Question), err
@@ -233,11 +234,12 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 		return fmt.Sprintf(`
 :moneybag:  *%s* is correct! ---  %s (%d)
 
-:question:  *New Question (%s for %d):* 
-> %s
+:question:  New Question ([%d] *%s* for *%d*): 
+> *%s*
 		`, old.Answer,
 			command.User.Nick,
 			scores[command.User.ID].Score,
+			activeQuestion[command.Channel].Airdate.Year,
 			activeQuestion[command.Channel].Category.Title,
 			activeQuestion[command.Channel].Value,
 			activeQuestion[command.Channel].Question), nil
