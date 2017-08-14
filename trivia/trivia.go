@@ -83,7 +83,14 @@ func renderScores() (string, error) {
 	// fmt.Println(string(buf.Bytes()))
 	return "```" + string(buf.Bytes()) + "```", nil
 }
-
+func showAbout() (string, error) {
+	return `
+	> This plugin for go-chat-bot (https://github.com/go-chat-bot/bot) leverages jService to provide every Jeopardy question ever.  Thanks to the person who made that! 
+	> By Joe Vacovsky Jr.
+	> Bot source code located at https://github.com/vacoj/trebot
+	> Submit bugs/issues at https://github.com/vacoj/trebot/issues
+	`, nil
+}
 func trivia(command *bot.Cmd) (string, error) {
 	if len(command.Args) < 1 {
 		return "Not enough arguments!", nil
@@ -94,8 +101,14 @@ func trivia(command *bot.Cmd) (string, error) {
 	switch command.Args[0] {
 	case "scoreboard":
 		str, err = renderScores()
+	case "about":
+		str, err = showAbout()
+	case "stats":
+		str, err = showStats(command)
+		str = "```" + str + "```"
 	case "score":
 		str, err = strconv.Itoa(scores[command.User.ID].Score), nil
+		str = command.User.Nick + ": " + str
 	case "answer":
 		s := strings.Join(command.Args[1:], " ")
 		str, err = checkAnswer(s, command)
@@ -153,6 +166,24 @@ func scrubStrings(input string) string {
 
 	return strings.ToLower(string(byteAnswer))
 }
+
+func showStats(cmd *bot.Cmd) (string, error) {
+	prettyScoreModel := fmt.Sprintf(`
+	Player Name: %s
+	Total Score: %d
+	Total Correct Answers: %d
+	Total Wrong Answers: %d
+	Total Requested New Questions: %d
+`,
+		scores[cmd.User.ID].Name,
+		scores[cmd.User.ID].Score,
+		scores[cmd.User.ID].CorrectAnswers,
+		scores[cmd.User.ID].WrongAnswers,
+		scores[cmd.User.ID].NewQuestionRequests,
+	)
+	return prettyScoreModel, nil
+}
+
 func getTriviaClue() (triviaModel, error) {
 	jservice := "http://jservice.io/api/random"
 	client := &http.Client{}
@@ -177,6 +208,7 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 		q.ExpiresAt = time.Now().Add(time.Minute * 5)
 		activeQuestion[command.Channel] = q
 		tmp := scores[command.User.ID]
+		tmp.CorrectAnswers++
 		tmp.Score += old.Value
 		tmp.ID = command.User.ID
 		tmp.Name = command.User.Nick
@@ -195,6 +227,10 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 			activeQuestion[command.Channel].Question), nil
 
 	}
+	tmp := scores[command.User.ID]
+	tmp.WrongAnswers++
+	scores[command.User.ID] = tmp
+	saveScores()
 	return "Try again...", nil
 }
 
@@ -206,9 +242,11 @@ func init() {
 		"trivia",
 		"Displays a trivia question.",
 		`answer {your answer}
-		!trivia new
-		!trivia score
-		!trivia scoreboard
+		!trivia new (stops current question, and pitches a new question)
+		!trivia score (show's the player's score)
+		!trivia scoreboard (shows all players' scores, ranked from highest -> lowest)
+		!trivia stats (show's the player's stats)
+		!trivia about (shows information related to this trivia bot)
 		`,
 		trivia)
 }
