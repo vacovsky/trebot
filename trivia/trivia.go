@@ -141,15 +141,16 @@ func trivia(command *bot.Cmd) (string, error) {
 > *%s*
 `,
 			oldAnswer,
-			activeQuestion[command.Channel].Airdate.Year,
+			activeQuestion[command.Channel].Airdate.Year(),
 			activeQuestion[command.Channel].Category.Title,
 			activeQuestion[command.Channel].Value,
 			activeQuestion[command.Channel].Question), err
 	default:
 		return fmt.Sprintf(`
-:question:  *Current Question (%s for %d):* 
-> %s
+:question:  Current Question (*[%d] %s for %d*): 
+> *%s*
 		`,
+			activeQuestion[command.Channel].Airdate.Year(),
 			activeQuestion[command.Channel].Category.Title,
 			activeQuestion[command.Channel].Value,
 			activeQuestion[command.Channel].Question), nil
@@ -239,7 +240,7 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 		`, old.Answer,
 			command.User.Nick,
 			scores[command.User.ID].Score,
-			activeQuestion[command.Channel].Airdate.Year,
+			activeQuestion[command.Channel].Airdate.Year(),
 			activeQuestion[command.Channel].Category.Title,
 			activeQuestion[command.Channel].Value,
 			activeQuestion[command.Channel].Question), nil
