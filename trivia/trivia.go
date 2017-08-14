@@ -117,6 +117,10 @@ func trivia(command *bot.Cmd) (string, error) {
 		q, err := getTriviaClue()
 		q.ExpiresAt = time.Now().Add(time.Minute * 5)
 		activeQuestion[command.Channel] = q
+		tmp := scores[command.User.ID]
+		tmp.NewQuestionRequests++
+		scores[command.User.ID] = tmp
+		saveScores()
 		return fmt.Sprintf(`
 :unamused:  *Previous Answer:* 
 > %s
