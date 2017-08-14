@@ -133,7 +133,7 @@ func trivia(command *bot.Cmd) (string, error) {
 :question:  *Current Question (%s for %d):* 
 > %s
 		`,
-			activeQuestion[command.Channel].Category,
+			activeQuestion[command.Channel].Category.Title,
 			activeQuestion[command.Channel].Value,
 			activeQuestion[command.Channel].Question), nil
 	}
@@ -225,7 +225,6 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 			activeQuestion[command.Channel].Category.Title,
 			activeQuestion[command.Channel].Value,
 			activeQuestion[command.Channel].Question), nil
-
 	}
 	tmp := scores[command.User.ID]
 	tmp.WrongAnswers++
@@ -243,9 +242,9 @@ func init() {
 		"Displays a trivia question.",
 		`answer {your answer}
 		!trivia new (stops current question, and pitches a new question)
-		!trivia score (show's the player's score)
+		!trivia score (shows your score)
 		!trivia scoreboard (shows all players' scores, ranked from highest -> lowest)
-		!trivia stats (show's the player's stats)
+		!trivia stats (show's your stats)
 		!trivia about (shows information related to this trivia bot)
 		`,
 		trivia)
