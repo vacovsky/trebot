@@ -96,11 +96,27 @@ func renderScores() (string, error) {
 
 func showAbout() (string, error) {
 	return `
-	> This plugin for go-chat-bot (https://github.com/go-chat-bot/bot) leverages jService to provide every Jeopardy question ever.  Thanks to the person who made that! 
-	> By Joe Vacovsky Jr.
-	> Bot source code located at https://github.com/vacoj/trebot
-	> Submit bugs/issues at https://github.com/vacoj/trebot/issues
-	`, nil
+*About Trebot*
+
+Commands:
+
+> *!trivia answer {your answer}*
+> *!trivia new* (stops current question, and pitches a new question)
+
+> *!trivia scoreboard* (shows all players' scores and stats, ranked from highest -> lowest scores)
+> *!trivia score* (shows your score)
+> *!trivia stats* (show's your stats)
+
+> *!trivia about* (shows information related to this trivia bot)
+
+General Info:
+
+> This plugin for go-chat-bot (https://github.com/go-chat-bot/bot) leverages jService (http://jservice.io) to provide every Jeopardy question ever.  Thanks to the person who made that! 
+> by Joe Vacovsky Jr. (https://github.com/vacoj)
+> Bot source code located at https://github.com/vacoj/trebot
+> Submit bugs/issues at https://github.com/vacoj/trebot/issues
+
+`, nil
 }
 
 func trivia(command *bot.Cmd) (string, error) {
