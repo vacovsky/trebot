@@ -63,6 +63,17 @@ func saveScores() {
 	}
 }
 
+func calcAccuracy(correct, incorrect int) string {
+	var result float64
+	div := float64(correct) + float64(incorrect)
+	if div == 0.0 {
+		div = 1
+	}
+	result = float64(correct) / div
+	fmt.Println(result)
+	return strconv.FormatFloat(result, 'f', 3, 64)
+}
+
 func renderScores() (string, error) {
 	buf := &bytes.Buffer{}
 	data := [][]string{}
@@ -73,12 +84,13 @@ func renderScores() (string, error) {
 			strconv.Itoa(u.CorrectAnswers),
 			strconv.Itoa(u.WrongAnswers),
 			strconv.Itoa(u.NewQuestionRequests),
+			calcAccuracy(u.CorrectAnswers, u.WrongAnswers),
 		}
 		data = append(data, thisUser)
 	}
 
 	table := tablewriter.NewWriter(buf) //NewWriter(os.Stdout)
-	table.SetHeader([]string{"Rank", "User", "Score", "Correct", "Wrong", "New"})
+	table.SetHeader([]string{"Rank", "User", "Score", "Correct", "Wrong", "New", "Accuracy"})
 	sort.Slice(data, func(i, j int) bool {
 		d1, _ := strconv.Atoi(data[i][1])
 		d2, _ := strconv.Atoi(data[j][1])
@@ -90,7 +102,7 @@ func renderScores() (string, error) {
 		table.Append(v)
 	}
 	table.Render()
-	fmt.Println(string(buf.Bytes()))
+	// fmt.Println(string(buf.Bytes()))
 	return "```" + string(buf.Bytes()) + "```", nil
 }
 

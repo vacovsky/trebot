@@ -139,3 +139,47 @@ func Test_scrubStrings(t *testing.T) {
 		})
 	}
 }
+
+func Test_calcAccuracy(t *testing.T) {
+	type args struct {
+		correct   int
+		incorrect int
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "float",
+			args: args{
+				correct:   43,
+				incorrect: 88,
+			},
+			want: "0.328",
+		},
+		{
+			name: "div zero",
+			args: args{
+				correct:   0,
+				incorrect: 0,
+			},
+			want: "0.000",
+		},
+		{
+			name: "perfect",
+			args: args{
+				correct:   43,
+				incorrect: 0,
+			},
+			want: "1.000",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := calcAccuracy(tt.args.correct, tt.args.incorrect); got != tt.want {
+				t.Errorf("calcAccuracy() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
