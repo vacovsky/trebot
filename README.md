@@ -1,16 +1,60 @@
 # Trebot - trivia plugin
-## for go-chat-bot https://github.com/go-chat-bot/bot
 
-### Setup - stand alone
+#### for go-chat-bot https://github.com/go-chat-bot/bot
+
+## Usage / Bot Interaction
+
+### Get a new question
+
+```slack
+!trivia new
+```
+
+### Answer a question
+
+```slack
+!trivia answer this is my answer
+```
+
+### View the Scoreboard
+
+```slack
+!trivia scoreboard
+
++------+------------------+--------+---------+-------+-----+----------+
+| RANK |       USER       | SCORE  | CORRECT | WRONG | NEW | ACCURACY |
++------+------------------+--------+---------+-------+-----+----------+
+|    1 | casey            | 225300 |     164 |   122 |  15 |    0.573 |
+|    2 | viki             |  63800 |     111 |   234 |  42 |    0.322 |
+|    3 | vacoj            |  60700 |      40 |    65 |  16 |    0.381 |
+|    4 | bologna          |  58000 |      61 |   128 |  50 |    0.323 |
+|    5 | josh             |  55800 |      53 |   310 |  45 |    0.146 |
+|    6 | krem             |  38200 |      73 |   196 |  33 |    0.271 |
+|    7 | joey             |  18000 |       2 |     2 |   0 |    0.500 |
+|    8 | k-w              |   1000 |       0 |     0 |   0 |    0.000 |
++------+------------------+--------+---------+-------+-----+----------+
+```
+
+### View "About" information
+
+```slack
+!trivia about
+```
+
+## Setup / Installation
+
+### Stand Alone
 
 ``` bash
 go get -u "github.com/vacoj/trebot"
+go get -u "github.com/vacoj/trebot/trivia"
+go get -u "github.com/go-chat-bot/bot/slack"
 # Set your bot token for slack as an environment variable called "trebot"
 export trebot="xxxx-yourslackbotkey"
 trebot
 ```
 
-### Setup - plugin for existing bot
+### As a plugin for an existing bot
 
 #### Install plugin
 
