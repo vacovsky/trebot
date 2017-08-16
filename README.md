@@ -10,17 +10,23 @@
 !trivia new
 ```
 
+<img src="https://github.com/vacoj/trebot/master/img/s2.png">
+
 ### Answer a question
 
 ```slack
-!trivia answer this is my answer
+!trivia answer pineapple
 ```
+
+<img src="https://github.com/vacoj/trebot/master/img/s2.png">
 
 ### View the Scoreboard
 
 ```slack
 !trivia scoreboard
+```
 
+```
 +------+------------------+--------+---------+-------+-----+----------+
 | RANK |       USER       | SCORE  | CORRECT | WRONG | NEW | ACCURACY |
 +------+------------------+--------+---------+-------+-----+----------+
