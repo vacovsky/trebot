@@ -10,7 +10,7 @@
 !trivia new
 ```
 
-<img src="https://github.com/vacoj/trebot/master/img/s2.png">
+<img src="https://raw.githubusercontent.com/vacoj/trebot/master/img/s2.png">
 
 ### Answer a question
 
@@ -18,7 +18,7 @@
 !trivia answer pineapple
 ```
 
-<img src="https://github.com/vacoj/trebot/master/img/s1.png">
+<img src="https://raw.githubusercontent.com/vacoj/trebot/master/img/s1.png">
 
 ### View the Scoreboard
 
