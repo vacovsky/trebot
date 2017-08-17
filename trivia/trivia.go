@@ -55,7 +55,7 @@ func saveScores() {
 	for _, u := range scores {
 		saveModel = append(saveModel, u)
 	}
-	scoresJSON, _ := json.Marshal(saveModel)
+	scoresJSON, _ := json.MarshalIndent(saveModel, "", "    ")
 	// fmt.Println(string(scoresJSON))
 	err := ioutil.WriteFile(scoresPath, scoresJSON, 0644)
 	if err != nil {
@@ -70,7 +70,7 @@ func calcAccuracy(correct, incorrect int) string {
 		div = 1
 	}
 	result = float64(correct) / div
-	fmt.Println(result)
+	// fmt.Println(result)
 	return strconv.FormatFloat(result, 'f', 3, 64)
 }
 

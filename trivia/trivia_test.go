@@ -30,6 +30,7 @@ func Test_saveScores(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			loadScores()
 			saveScores()
 		})
 	}
@@ -74,9 +75,13 @@ func Test_trivia(t *testing.T) {
 						ID:   "fniaodaw",
 						Nick: "fesnjfis",
 					},
-					Command: "!trivia answer stuff'",
+					Command: "answer stuff stuff stuff'",
+					Args: []string{
+						"answer", "stuff", "stuff", "morestuff",
+					},
 				},
 			},
+			want: "Try again...",
 		},
 	}
 	for _, tt := range tests {
