@@ -2,7 +2,7 @@
 
 #### for go-chat-bot https://github.com/go-chat-bot/bot
 
-[![Circle CI](https://circleci.com/gh/vacoj/trebot/tree/master.svg?style=svg)]
+![Circle CI](https://circleci.com/gh/vacoj/trebot/tree/master.svg?style=svg)
 
 ## Usage / Bot Interaction
 
