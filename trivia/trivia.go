@@ -116,8 +116,7 @@ Commands:
 > *!trivia new* (stops current question, and pitches a new question)
 
 > *!trivia scoreboard* (shows all players' scores and stats, ranked from highest -> lowest scores)
-> *!trivia score* (shows your score)
-> *!trivia stats* (show's your stats)
+> *!trivia stats* (shows your stats)
 
 > *!trivia about* (shows information related to this trivia bot)
 
@@ -127,7 +126,6 @@ General Info:
 > by Joe Vacovsky Jr. (https://github.com/vacoj)
 > Bot source code located at https://github.com/vacoj/trebot
 > Submit bugs/issues at https://github.com/vacoj/trebot/issues
-
 `, nil
 }
 
@@ -146,9 +144,6 @@ func trivia(command *bot.Cmd) (string, error) {
 	case "stats":
 		str, err = showStats(command)
 		str = "```" + str + "```"
-	case "score":
-		str, err = strconv.Itoa(scores[command.User.ID].Score), nil
-		str = command.User.Nick + ": " + str
 	case "answer":
 		s := strings.Join(command.Args[1:], " ")
 		str, err = checkAnswer(s, command)
@@ -208,17 +203,19 @@ func scrubStrings(input string) string {
 
 func showStats(cmd *bot.Cmd) (string, error) {
 	prettyScoreModel := fmt.Sprintf(`
-	Player Name: %s
-	Total Score: %d
-	Total Correct Answers: %d
-	Total Wrong Answers: %d
-	Total Requested New Questions: %d
+Player Name: %s
+Total Score: %d
+Total Correct Answers: %d
+Total Wrong Answers: %d
+Total New Question Requests: %d
+Accuracy: %s
 `,
 		scores[cmd.User.ID].Name,
 		scores[cmd.User.ID].Score,
 		scores[cmd.User.ID].CorrectAnswers,
 		scores[cmd.User.ID].WrongAnswers,
 		scores[cmd.User.ID].NewQuestionRequests,
+		calcAccuracy(scores[cmd.User.ID].CorrectAnswers, scores[cmd.User.ID].WrongAnswers),
 	)
 	return prettyScoreModel, nil
 }

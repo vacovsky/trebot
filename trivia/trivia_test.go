@@ -13,7 +13,6 @@ func Test_loadScores(t *testing.T) {
 		{
 			name: "testload",
 		},
-		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -108,7 +107,30 @@ func Test_deepCheckAnswer(t *testing.T) {
 		args args
 		want bool
 	}{
-	// TODO: Add test cases.
+		{
+			args: args{
+				providedAnswer: "grrgre",
+				realAnswer:     "gewge",
+			},
+			name: "test wrong answer",
+			want: false,
+		},
+		{
+			args: args{
+				providedAnswer: "THISSHOULDPASS",
+				realAnswer:     "thisshouldpass",
+			},
+			name: "test correct answer",
+			want: true,
+		},
+		{
+			args: args{
+				providedAnswer: "should",
+				realAnswer:     "thisshouldpass",
+			},
+			name: "test partial match / correct answer",
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -184,6 +206,50 @@ func Test_calcAccuracy(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := calcAccuracy(tt.args.correct, tt.args.incorrect); got != tt.want {
 				t.Errorf("calcAccuracy() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_showStats(t *testing.T) {
+	type args struct {
+		cmd *bot.Cmd
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{
+			name: "show stats",
+			args: args{
+				cmd: &bot.Cmd{
+					User: &bot.User{
+						ID: "U6M4BAGHK",
+					},
+				},
+			},
+			want: `
+Player Name: vikimarras82
+Total Score: 94900
+Total Correct Answers: 158
+Total Wrong Answers: 316
+Total New Question Requests: 93
+Accuracy: 0.333
+`,
+		},
+	}
+	loadScores()
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := showStats(tt.args.cmd)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("showStats() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("showStats() = %v, want %v", got, tt.want)
 			}
 		})
 	}
