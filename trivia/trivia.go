@@ -11,16 +11,20 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/go-chat-bot/bot"
 	"github.com/olekukonko/tablewriter"
 )
 
-var scoresPath = "triviaScores.json"
-var scores = map[string]scoreModel{}
-var activeQuestion = map[string]triviaModel{}
-var previousQuestion = map[string]triviaModel{}
+var (
+	scoresPath       = "triviaScores.json"
+	scores           = map[string]scoreModel{}
+	activeQuestion   = map[string]triviaModel{}
+	previousQuestion = map[string]triviaModel{}
+	scoreLock        = sync.Mutex{}
+)
 
 func loadScores() {
 	scoreLocal := []scoreModel{}
@@ -52,11 +56,12 @@ func loadScores() {
 
 func saveScores() {
 	saveModel := []scoreModel{}
+	scoreLock.Lock()
 	for _, u := range scores {
 		saveModel = append(saveModel, u)
 	}
+	scoreLock.Unlock()
 	scoresJSON, _ := json.MarshalIndent(saveModel, "", "    ")
-	// fmt.Println(string(scoresJSON))
 	err := ioutil.WriteFile(scoresPath, scoresJSON, 0644)
 	if err != nil {
 		fmt.Println(err)
@@ -77,6 +82,7 @@ func calcAccuracy(correct, incorrect int) string {
 func renderScores() (string, error) {
 	buf := &bytes.Buffer{}
 	data := [][]string{}
+	scoreLock.Lock()
 	for _, u := range scores {
 		thisUser := []string{
 			u.Name,
@@ -88,6 +94,7 @@ func renderScores() (string, error) {
 		}
 		data = append(data, thisUser)
 	}
+	scoreLock.Unlock()
 
 	table := tablewriter.NewWriter(buf) //NewWriter(os.Stdout)
 	table.SetHeader([]string{"Rank", "User", "Score", "Correct", "Wrong", "New", "Accuracy"})
@@ -127,6 +134,10 @@ General Info:
 > Bot source code located at https://github.com/vacoj/trebot
 > Submit bugs/issues at https://github.com/vacoj/trebot/issues
 `, nil
+}
+
+func answer(c *bot.PassiveCmd) (string, error) {
+	return checkAnswerSilently(c.Raw, c)
 }
 
 func trivia(command *bot.Cmd) (string, error) {
@@ -270,6 +281,39 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 	return "Try again...", nil
 }
 
+func checkAnswerSilently(answer string, command *bot.PassiveCmd) (string, error) {
+	old := activeQuestion[command.Channel]
+	if deepCheckAnswer(answer, activeQuestion[command.Channel].Answer) {
+		q, _ := getTriviaClue()
+		q.ExpiresAt = time.Now().Add(time.Minute * 5)
+		activeQuestion[command.Channel] = q
+		tmp := scores[command.User.ID]
+		tmp.CorrectAnswers++
+		tmp.Score += old.Value
+		tmp.ID = command.User.ID
+		tmp.Name = command.User.Nick
+		scores[command.User.ID] = tmp
+		saveScores()
+		return fmt.Sprintf(`
+:moneybag:  *%s* is correct! ---  %s (%d)
+
+:question:  New Question ([%d] *%s* for *%d*): 
+> *%s*
+		`, old.Answer,
+			command.User.Nick,
+			scores[command.User.ID].Score,
+			activeQuestion[command.Channel].Airdate.Year(),
+			activeQuestion[command.Channel].Category.Title,
+			activeQuestion[command.Channel].Value,
+			activeQuestion[command.Channel].Question), nil
+	}
+	tmp := scores[command.User.ID]
+	tmp.WrongAnswers++
+	scores[command.User.ID] = tmp
+	saveScores()
+	return "", nil
+}
+
 func init() {
 	loadScores()
 
@@ -285,6 +329,7 @@ func init() {
 		!trivia about (shows information related to this trivia bot)
 		`,
 		trivia)
+	bot.RegisterPassiveCommand(``, answer)
 }
 
 func deepCheckAnswer(providedAnswer, realAnswer string) bool {

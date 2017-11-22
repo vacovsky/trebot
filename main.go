@@ -8,5 +8,5 @@ import (
 )
 
 func main() {
-	slack.Run(os.Getenv("trebot"))
+	slack.Run(os.Getenv("TREBOT_KEY"))
 }
