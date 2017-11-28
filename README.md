@@ -69,7 +69,7 @@ trebot
 ``` bash
 go get -u "github.com/vacoj/trebot/trivia"
 #Set your bot token for slack as an environment variable called "trebot"
-export trebot="xxxx-yourslackbotkey"
+export TREBOT_KEY="xxxx-yourslackbotkey"
 ```
 
 #### Update your bot main to include the plugin
