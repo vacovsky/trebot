@@ -88,3 +88,15 @@ func main() {
 	slack.Run(os.Getenv("trebot"))
 }
 ```
+
+## Contributing
+
+Pull requests are encouraged. Please submit unit tests with any submitted patch. Also, please make it clear what your patch does in branch and commit messages.
+
+1. Fork the repository
+2. Create your feature branch `git checkout -b change-to-thing`
+3. Commit your changes `git commit -am 'changes to the thing'`
+4. Push to the branch `git push origin change-to-thing`
+5. Create new pull request
+6. Be patient
+
