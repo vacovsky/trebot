@@ -160,7 +160,7 @@ func trivia(command *bot.Cmd) (string, error) {
 		str = "```" + str + "```"
 	case "answer":
 		if command.User.IsBot {
-			return fmt.Sprintf("Sorry %s, bots are not allowed to play.", c.User.Nick), nil
+			return fmt.Sprintf("Sorry %s, bots are not allowed to play.", command.User.Nick), nil
 		}
 
 		s := strings.Join(command.Args[1:], " ")
