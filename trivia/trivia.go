@@ -137,6 +137,9 @@ General Info:
 }
 
 func answer(c *bot.PassiveCmd) (string, error) {
+	if c.User.IsBot {
+		return fmt.Sprintf("Sorry %s, bots are not allowed to play.", c.User.Nick), nil
+	}
 	return checkAnswerSilently(c.Raw, c)
 }
 
@@ -156,6 +159,10 @@ func trivia(command *bot.Cmd) (string, error) {
 		str, err = showStats(command)
 		str = "```" + str + "```"
 	case "answer":
+		if command.User.IsBot {
+			return fmt.Sprintf("Sorry %s, bots are not allowed to play.", c.User.Nick), nil
+		}
+
 		s := strings.Join(command.Args[1:], " ")
 		str, err = checkAnswer(s, command)
 	case "new":
@@ -276,6 +283,7 @@ func checkAnswer(answer string, command *bot.Cmd) (string, error) {
 	}
 	tmp := scores[command.User.ID]
 	tmp.WrongAnswers++
+	tmp.Score -= old.Value / 10
 	scores[command.User.ID] = tmp
 	saveScores()
 	return "Try again...", nil
@@ -309,6 +317,7 @@ func checkAnswerSilently(answer string, command *bot.PassiveCmd) (string, error)
 	}
 	tmp := scores[command.User.ID]
 	tmp.WrongAnswers++
+	tmp.Score -= old.Value / 10
 	scores[command.User.ID] = tmp
 	saveScores()
 	return "", nil
