@@ -343,11 +343,9 @@ func init() {
 
 func deepCheckAnswer(providedAnswer, realAnswer string) bool {
 	lowerP, lowerR := strings.ToLower(providedAnswer), strings.ToLower(realAnswer)
-	// fmt.Print1ln(lowerP, ":", lowerR, ":", string(byteAnswer))
-
 	if len([]byte(lowerP)) >= 5 && strings.Contains(lowerR, lowerP) {
 		return true
-	} else if strings.ToLower(realAnswer) == strings.ToLower(providedAnswer) {
+	} else if strings.ToLower(lowerR) == strings.ToLower(lowerP) {
 		return true
 	}
 	return false
