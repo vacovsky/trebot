@@ -18,6 +18,8 @@
 
 ```slack
 !trivia answer pineapple
+or
+pineapple
 ```
 
 <img src="https://raw.githubusercontent.com/vacoj/trebot/master/img/s1.png">
