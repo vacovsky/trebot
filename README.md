@@ -17,6 +17,8 @@
 ### Answer a question
 
 ```slack
+!trivia answer pineapple
+or
 pineapple
 ```
 

@@ -119,7 +119,7 @@ func showAbout() (string, error) {
 
 Commands:
 
-> *!trivia answer {your answer}*
+> *!trivia answer {your answer}* Alternatively, you can simply type in your answer without the leading *!trivia answer* portion
 > *!trivia new* (stops current question, and pitches a new question)
 
 > *!trivia scoreboard* (shows all players' scores and stats, ranked from highest -> lowest scores)
