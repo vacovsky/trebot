@@ -340,7 +340,7 @@ func init() {
 		trivia)
 	bot.RegisterPassiveCommand(``, answer)
 }
-
+ 
 func deepCheckAnswer(providedAnswer, realAnswer string) bool {
 	lowerP, lowerR := strings.ToLower(providedAnswer), strings.ToLower(realAnswer)
 	if len([]byte(lowerP)) >= 5 && strings.Contains(lowerR, lowerP) {
