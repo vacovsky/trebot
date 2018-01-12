@@ -125,6 +125,14 @@ func Test_deepCheckAnswer(t *testing.T) {
 		},
 		{
 			args: args{
+				providedAnswer: "flag",
+				realAnswer:     "flag",
+			},
+			name: "less than 5 chars",
+			want: true,
+		},
+		{
+			args: args{
 				providedAnswer: "should",
 				realAnswer:     "thisshouldpass",
 			},
