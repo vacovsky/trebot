@@ -126,6 +126,7 @@ Commands:
 > *!trivia stats* (shows your stats)
 
 > *!trivia about* (shows information related to this trivia bot)
+> *!trivia rules* (shows information about how answers are matched, and about scoring rules)
 
 General Info:
 
@@ -133,6 +134,26 @@ General Info:
 > by Joe Vacovsky Jr. (https://github.com/vacoj)
 > Bot source code located at https://github.com/vacoj/trebot
 > Submit bugs/issues at https://github.com/vacoj/trebot/issues
+`, nil
+}
+
+func showRules() (string, error) {
+	return `
+*Trebot Rules*
+
+Matching:
+
+> Actual answers have the following characters / words removed before comparison (players' answers are not modified)
+>     '  "  .  (  )  an  the  a 
+> Partial matches are acceptable, as long as the partial answer given is 5 or more characters
+> Players' answers with less than 5 characters must be an *exact* match to the actual answer
+> If you want the matching rules to be better, feel free to contribute (https://github.com/vacoj/trebot)
+
+Scoring:
+
+> All text not prefaced by !trivia will be considered an answer
+> Wrong answers are penalized as a percentage of the question's value to discourage volume-guessing
+> Bots are not allowed to play
 `, nil
 }
 
@@ -155,6 +176,8 @@ func trivia(command *bot.Cmd) (string, error) {
 		str, err = renderScores()
 	case "about":
 		str, err = showAbout()
+	case "rules":
+		str, err = showRules()
 	case "stats":
 		str, err = showStats(command)
 		str = "```" + str + "```"
@@ -340,7 +363,7 @@ func init() {
 		trivia)
 	bot.RegisterPassiveCommand(``, answer)
 }
- 
+
 func deepCheckAnswer(providedAnswer, realAnswer string) bool {
 	lowerP, lowerR := strings.ToLower(strings.Trim(providedAnswer, " ")), strings.ToLower(strings.Trim(realAnswer, " "))
 	if len([]byte(lowerP)) >= 5 && strings.Contains(lowerR, lowerP) {
