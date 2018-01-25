@@ -14,13 +14,20 @@ import (
 	"sync"
 	"time"
 
+	"./admin"
+	"./plugs"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/go-chat-bot/bot"
 	"github.com/olekukonko/tablewriter"
 )
 
 var (
 	scoresPath       = "triviaScores.json"
+	bansPath         = "triviaBans.json"
+	adminsPath       = "triviaAdmins.json"
 	scores           = map[string]scoreModel{}
+	bans             = map[string]admin.BanModel{}
+	admins           = map[string]admin.AdminModel{}
 	activeQuestion   = map[string]triviaModel{}
 	previousQuestion = map[string]triviaModel{}
 	scoreLock        = sync.Mutex{}
@@ -164,23 +171,90 @@ func answer(c *bot.PassiveCmd) (string, error) {
 	return checkAnswerSilently(c.Raw, c)
 }
 
+func checkIfAdmin(userID string) bool {
+	for u := range admins {
+		if admins[u].ID == userID {
+			return true
+		}
+	}
+	return false
+}
+
+func banUser(userID string, command *bot.Cmd) {
+	bans[userID] = admin.BanModel{
+		ID:           userID,
+		BannedSince:  time.Now(),
+		BannedByID:   command.User.ID,
+		BannedByName: command.User.Nick,
+	}
+	admin.SaveBans(bansPath, bans)
+}
+
+func unbanUser(userID string) {
+	tmpBans := map[string]admin.BanModel{}
+
+	for b := range bans {
+		if bans[b].ID != userID {
+			tmpBans[bans[b].ID] = bans[b]
+		}
+	}
+	bans = tmpBans
+	admin.SaveBans(bansPath, tmpBans)
+}
+
 func trivia(command *bot.Cmd) (string, error) {
 	if len(command.Args) < 1 {
 		return "Not enough arguments!", nil
 	}
+
+	for b := range bans {
+		if bans[b].ID == command.User.ID {
+			return fmt.Sprintf(":no_entry_sign: Sorry, %s, you're not allowed to play.  If you think this is unfair, please check with one of the admins.", command.User.Nick), nil
+		}
+	}
+
 	var str string
 	var err error
 
 	switch command.Args[0] {
+
+	case "ban":
+		if len(command.Args) == 2 {
+			if checkIfAdmin(command.User.ID) {
+				for b := range bans {
+					if bans[b].ID == command.Args[1] {
+						return fmt.Sprintf(":jomoji-dealwithit-animated: %s is already banned.", command.Args[1]), nil
+					}
+				}
+				banUser(command.Args[1], command)
+				return fmt.Sprintf(":jomoji-devil: %s has been banned.  !trivia unban %s to unban.", command.Args[1], command.Args[1]), nil
+			}
+			return "Only administrators can ban and unban.", nil
+		}
+
+	case "unban":
+		if len(command.Args) == 2 {
+			if checkIfAdmin(command.User.ID) {
+				unbanUser(command.Args[1])
+				return fmt.Sprintf(":jomoji-angel: %s has been unbanned.", command.Args[1]), nil
+			}
+			return "Only administrators can ban and unban.", nil
+		}
+
 	case "scoreboard":
 		str, err = renderScores()
+
 	case "about":
 		str, err = showAbout()
+
 	case "rules":
 		str, err = showRules()
+
 	case "stats":
+
 		str, err = showStats(command)
 		str = "```" + str + "```"
+
 	case "answer":
 		if command.User.IsBot {
 			return fmt.Sprintf("Sorry %s, bots are not allowed to play.", command.User.Nick), nil
@@ -188,6 +262,7 @@ func trivia(command *bot.Cmd) (string, error) {
 
 		s := strings.Join(command.Args[1:], " ")
 		str, err = checkAnswer(s, command)
+
 	case "new":
 		oldAnswer := activeQuestion[command.Channel].Answer
 		q, err := getTriviaClue()
@@ -197,6 +272,7 @@ func trivia(command *bot.Cmd) (string, error) {
 		tmp.NewQuestionRequests++
 		scores[command.User.ID] = tmp
 		saveScores()
+		plugs.Publish(``, plugs.NewQuestionPS)
 		return fmt.Sprintf(`
 :unamused:  Previous Answer: 
 > *%s*
@@ -209,6 +285,7 @@ func trivia(command *bot.Cmd) (string, error) {
 			activeQuestion[command.Channel].Category.Title,
 			activeQuestion[command.Channel].Value,
 			activeQuestion[command.Channel].Question), err
+
 	default:
 		return showAbout()
 	}
@@ -348,6 +425,11 @@ func checkAnswerSilently(answer string, command *bot.PassiveCmd) (string, error)
 
 func init() {
 	loadScores()
+	admins = admin.LoadAdmins(adminsPath)
+	bans = admin.LoadBans(bansPath)
+
+	spew.Dump(bans)
+	spew.Dump(admins)
 
 	fmt.Println("Registering Trivia...")
 	bot.RegisterCommand(
@@ -367,9 +449,12 @@ func init() {
 func deepCheckAnswer(providedAnswer, realAnswer string) bool {
 	lowerP, lowerR := strings.ToLower(strings.Trim(providedAnswer, " ")), strings.ToLower(strings.Trim(realAnswer, " "))
 	if len([]byte(lowerP)) >= 5 && strings.Contains(lowerR, lowerP) {
+		plugs.Publish(``, plugs.CorrectAnswerPS)
 		return true
 	} else if lowerR == lowerP {
+		plugs.Publish(``, plugs.CorrectAnswerPS)
 		return true
 	}
+	plugs.Publish(``, plugs.IncorrectAnswerPS)
 	return false
 }

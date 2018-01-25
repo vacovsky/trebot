@@ -1,1 +1,18 @@
-[]
+[
+    {
+        "id": "",
+        "name": "",
+        "score": -120,
+        "correct_answers": 0,
+        "wrong_answers": 5,
+        "new_question_requests": 1
+    },
+    {
+        "id": "",
+        "name": "",
+        "score": 0,
+        "correct_answers": 0,
+        "wrong_answers": 0,
+        "new_question_requests": 1
+    }
+]

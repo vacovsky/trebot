@@ -91,6 +91,31 @@ func main() {
 }
 ```
 
+## Blinky Lights
+
+```
+
+1516838759.729986 [0 129.65.184.221:55828] "AUTH" "fbn4u8ow0bf7w389w4780pfobawuy8b4w780opfbaewu8faopghu9wopfbesiu"
+1516838759.731502 [0 129.65.184.221:55828] "PUBLISH" "ws2812b_0" "{'senselight': 0, 'brightness': 10, 'color': ['tan'], 'method_name': 'room_lighting', 'style_name': 'Room Lighting', 'led_count': 630}"
+1516838760.040196 [0 129.65.184.221:55828] "PUBLISH" "ws2812b_0" "{'senselight': 0, 'brightness': 10, 'color': ['palegoldenrod'], 'method_name': 'room_lighting', 'style_name': 'Room Lighting', 'led_count': 630}"
+1516838760.343341 [0 129.65.184.221:55828] "PUBLISH" "ws2812b_0" "{'senselight': 0, 'brightness': 10, 'color': ['firebrick'], 'method_name': 'room_lighting', 'style_name': 'Room Lighting', 'led_count': 630}"
+1516838760.646675 [0 129.65.184.221:55828] "PUBLISH" "ws2812b_0" "{'senselight': 0, 'brightness': 10, 'color': ['plum'], 'method_name': 'room_lighting', 'style_name': 'Room Lighting', 'led_count': 630}"
+1516838760.950227 [0 129.65.184.221:55828] "PUBLISH" "ws2812b_0" "{'senselight': 0, 'brightness': 10, 'color': ['darkslategray'], 'method_name': 'room_lighting', 'style_name': 'Room Lighting', 'led_count': 630}"
+1516838835.413406 [0 129.65.184.221:55830] "AUTH" "fbn4u8ow0bf7w389w4780pfobawuy8b4w780opfbaewu8faopghu9wopfbesiu"
+1516838835.414897 [0 129.65.184.221:55830] "PUBLISH" "ws2812b_0" "{'senselight': 0, 'brightness': 10, 'color': ['lightgoldenrodyellow'], 'method_name': 'room_lighting', 'style_name': 'Room Lighting', 'led_count': 630}"
+1516838835.723626 [0 129.65.184.221:55830] "PUBLISH" "ws2812b_0" "{'senselight': 0, 'brightness': 10, 'color': ['seashell'], 'method_name': 'room_lighting', 'style_name': 'Room Lighting', 'led_count': 630}"
+1516838836.027203 [0 129.65.184.221:55830] "PUBLISH" "ws2812b_0" "{'senselight': 0, 'brightness': 10, 'color': ['seashell'], 'method_name': 'room_lighting', 'style_name': 'Room Lighting', 'led_count': 630}"
+1516838836.330787 [0 129.65.184.221:55830] "PUBLISH" "ws2812b_0" "{'senselight': 0, 'brightness': 10, 'color': ['darksalmon'], 'method_name': 'room_lighting', 'style_name': 'Room Lighting', 'led_count': 630}"
+1516838836.634226 [0 129.65.184.221:55830] "PUBLISH" "ws2812b_0" "{'senselight': 0, 'brightness': 10, 'color': ['peachpuff'], 'method_name': 'room_lighting', 'style_name': 'Room Lighting', 'led_count': 630}"
+1516838838.803780 [0 129.65.184.221:55832] "AUTH" "fbn4u8ow0bf7w389w4780pfobawuy8b4w780opfbaewu8faopghu9wopfbesiu"
+1516838838.805286 [0 129.65.184.221:55832] "PUBLISH" "ws2812b_0" "{'senselight': 0, 'brightness': 10, 'color': ['palevioletred'], 'method_name': 'room_lighting', 'style_name': 'Room Lighting', 'led_count': 630}"
+1516838839.113754 [0 129.65.184.221:55832] "PUBLISH" "ws2812b_0" "{'senselight': 0, 'brightness': 10, 'color': ['paleturquoise'], 'method_name': 'room_lighting', 'style_name': 'Room Lighting', 'led_count': 630}"
+1516838839.417192 [0 129.65.184.221:55832] "PUBLISH" "ws2812b_0" "{'senselight': 0, 'brightness': 10, 'color': ['skyblue'], 'method_name': 'room_lighting', 'style_name': 'Room Lighting', 'led_count': 630}"
+1516838839.720511 [0 129.65.184.221:55832] "PUBLISH" "ws2812b_0" "{'senselight': 0, 'brightness': 10, 'color': ['lightsteelblue'], 'method_name': 'room_lighting', 'style_name': 'Room Lighting', 'led_count': 630}"
+1516838840.023737 [0 129.65.184.221:55832] "PUBLISH" "ws2812b_0" "{'senselight': 0, 'brightness': 10, 'color': ['floralwhite'], 'method_name': 'room_lighting', 'style_name': 'Room Lighting', 'led_count': 630}"
+
+```
+
 ## Contributing
 
 Pull requests are encouraged. Please submit unit tests with any submitted patch. Also, please make it clear what your patch does in branch and commit messages.
