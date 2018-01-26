@@ -168,6 +168,12 @@ func answer(c *bot.PassiveCmd) (string, error) {
 	if c.User.IsBot {
 		return fmt.Sprintf("Sorry %s, bots are not allowed to play.", c.User.Nick), nil
 	}
+
+	for b := range bans {
+		if bans[b].ID == c.User.ID {
+			return fmt.Sprintf(":no_entry_sign: Sorry, %s, you're not allowed to play.  If you think this is unfair, please check with one of the admins.", c.User.Nick), nil
+		}
+	}
 	return checkAnswerSilently(c.Raw, c)
 }
 
