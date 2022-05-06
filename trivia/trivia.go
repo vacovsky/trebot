@@ -209,6 +209,21 @@ func trivia(command *bot.Cmd) (string, error) {
 			activeQuestion[command.Channel].Category.Title,
 			activeQuestion[command.Channel].Value,
 			activeQuestion[command.Channel].Question), err
+	case "invalid":
+		reportInvalid(activeQuestion[command.Channel].Id)
+		q, err := getTriviaClue()
+		q.ExpiresAt = time.Now().Add(time.Minute * 5)
+		activeQuestion[command.Channel] = q
+		return fmt.Sprintf(`
+:+1:  Question reported invalid!
+
+:question:  New Question ([%d] *%s* for *%d*):
+> *%s*
+`,
+			activeQuestion[command.Channel].Airdate.Year(),
+			activeQuestion[command.Channel].Category.Title,
+			activeQuestion[command.Channel].Value,
+			activeQuestion[command.Channel].Question), err
 	default:
 		return showAbout()
 	}
@@ -276,6 +291,17 @@ func getTriviaClue() (triviaModel, error) {
 
 	// fmt.Println(q[0].Question, " ***** ", q[0].Answer)
 	return q[0], nil
+}
+
+func reportInvalid(questionId int) (bool, error) {
+	jservice := "http://jservice.io/api/invalid"
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", jservice, questionId)
+	r, err := client.Do(req)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 func checkAnswer(answer string, command *bot.Cmd) (string, error) {
